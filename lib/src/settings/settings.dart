@@ -3,7 +3,6 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import 'package:flutter/foundation.dart';
-
 import 'persistence/settings_persistence.dart';
 
 /// An class that holds settings like [playerName] or [musicOn],

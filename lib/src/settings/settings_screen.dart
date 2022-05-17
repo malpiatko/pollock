@@ -5,8 +5,10 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'dart:io';
 
-import '../in_app_purchase/in_app_purchase.dart';
 import '../player_progress/player_progress.dart';
 import '../style/palette.dart';
 import '../style/responsive_screen.dart';
@@ -14,9 +16,14 @@ import 'custom_name_dialog.dart';
 import 'custom_api_dialog.dart';
 import 'settings.dart';
 
-class SettingsScreen extends StatelessWidget {
+class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
 
+  @override
+  _SettingsScreenState createState() => _SettingsScreenState();
+}
+
+class _SettingsScreenState extends State<SettingsScreen> {
   static const _gap = SizedBox(height: 60);
 
   @override
@@ -46,6 +53,12 @@ class SettingsScreen extends StatelessWidget {
             const _APIChangeLine(
               'Your API Token',
             ),
+            ElevatedButton(
+              onPressed: () {
+                fetchFiles();
+              },
+              child: const Text('Files to print'),
+            ),
             ValueListenableBuilder<bool>(
               valueListenable: settings.soundsOn,
               builder: (context, soundsOn, child) => _SettingsLine(
@@ -62,33 +75,6 @@ class SettingsScreen extends StatelessWidget {
                 onSelected: () => settings.toggleMusicOn(),
               ),
             ),
-            Consumer<InAppPurchaseController?>(
-                builder: (context, inAppPurchase, child) {
-              if (inAppPurchase == null) {
-                // In-app purchases are not supported yet.
-                // Go to lib/main.dart and uncomment the lines that create
-                // the InAppPurchaseController.
-                return const SizedBox.shrink();
-              }
-
-              Widget icon;
-              VoidCallback? callback;
-              if (inAppPurchase.adRemoval.active) {
-                icon = const Icon(Icons.check);
-              } else if (inAppPurchase.adRemoval.pending) {
-                icon = const CircularProgressIndicator();
-              } else {
-                icon = const Icon(Icons.ad_units);
-                callback = () {
-                  inAppPurchase.buy();
-                };
-              }
-              return _SettingsLine(
-                'Remove ads',
-                icon,
-                onSelected: callback,
-              );
-            }),
             _SettingsLine(
               'Reset progress',
               const Icon(Icons.delete),
@@ -225,6 +211,49 @@ class _SettingsLine extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+Future<List<File>> fetchFiles() async {
+  print('fetching files');
+  final response = await http.get(
+    Uri.parse('http://localhost:9000/api/files'),
+    // Send authorization headers to the backend.
+    headers: {
+      HttpHeaders.authorizationHeader:
+          'Bearer 2004F053D4C44F0486C101ABD495A6A2',
+    },
+  );
+  print(response.statusCode);
+
+  if (response.statusCode == 200) {
+    List<dynamic> body = jsonDecode(response.body)['files'];
+
+    List<File> files = body
+        .map(
+          (dynamic item) => File.fromJson(item),
+        )
+        .toList();
+    print(files);
+    return files;
+  } else {
+    // If the server did not return a 200 OK response,
+    // then throw an exception.
+    throw Exception('Failed to load album');
+  }
+}
+
+class File {
+  final String name;
+
+  const File({
+    required this.name,
+  });
+
+  factory File.fromJson(Map<String, dynamic> json) {
+    return File(
+      name: json['display'],
     );
   }
 }
