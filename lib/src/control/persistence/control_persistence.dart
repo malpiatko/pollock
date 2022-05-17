@@ -2,18 +2,16 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-/// An interface of persistence stores for settings.
+/// An interface of persistence stores for control.
 ///
 /// Implementations can range from simple in-memory storage through
 /// local preferences to cloud-based solutions.
-abstract class SettingsPersistence {
+abstract class ControlPersistence {
   Future<bool> getMusicOn();
 
   Future<bool> getMuted({required bool defaultValue});
 
   Future<String> getPlayerName();
-
-  Future<String> getAPIToken();
 
   Future<bool> getSoundsOn();
 
@@ -24,6 +22,4 @@ abstract class SettingsPersistence {
   Future<void> savePlayerName(String value);
 
   Future<void> saveSoundsOn(bool value);
-
-  Future<void> saveAPIToken(String value);
 }

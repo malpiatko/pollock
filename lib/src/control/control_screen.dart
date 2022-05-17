@@ -11,17 +11,16 @@ import '../player_progress/player_progress.dart';
 import '../style/palette.dart';
 import '../style/responsive_screen.dart';
 import 'custom_name_dialog.dart';
-import 'custom_api_dialog.dart';
-import 'settings.dart';
+import 'control.dart';
 
-class SettingsScreen extends StatelessWidget {
-  const SettingsScreen({super.key});
+class ControlScreen extends StatelessWidget {
+  const ControlScreen({super.key});
 
   static const _gap = SizedBox(height: 60);
 
   @override
   Widget build(BuildContext context) {
-    final settings = context.watch<SettingsController>();
+    final control = context.watch<ControlController>();
     final palette = context.watch<Palette>();
 
     return Scaffold(
@@ -31,7 +30,7 @@ class SettingsScreen extends StatelessWidget {
           children: [
             _gap,
             const Text(
-              'Settings',
+              'Control',
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontFamily: 'Permanent Marker',
@@ -43,23 +42,20 @@ class SettingsScreen extends StatelessWidget {
             const _NameChangeLine(
               'Name',
             ),
-            const _APIChangeLine(
-              'Your API Token',
-            ),
             ValueListenableBuilder<bool>(
-              valueListenable: settings.soundsOn,
-              builder: (context, soundsOn, child) => _SettingsLine(
+              valueListenable: control.soundsOn,
+              builder: (context, soundsOn, child) => _ControlLine(
                 'Sound FX',
                 Icon(soundsOn ? Icons.graphic_eq : Icons.volume_off),
-                onSelected: () => settings.toggleSoundsOn(),
+                onSelected: () => control.toggleSoundsOn(),
               ),
             ),
             ValueListenableBuilder<bool>(
-              valueListenable: settings.musicOn,
-              builder: (context, musicOn, child) => _SettingsLine(
+              valueListenable: control.musicOn,
+              builder: (context, musicOn, child) => _ControlLine(
                 'Music',
                 Icon(musicOn ? Icons.music_note : Icons.music_off),
-                onSelected: () => settings.toggleMusicOn(),
+                onSelected: () => control.toggleMusicOn(),
               ),
             ),
             Consumer<InAppPurchaseController?>(
@@ -83,13 +79,13 @@ class SettingsScreen extends StatelessWidget {
                   inAppPurchase.buy();
                 };
               }
-              return _SettingsLine(
+              return _ControlLine(
                 'Remove ads',
                 icon,
                 onSelected: callback,
               );
             }),
-            _SettingsLine(
+            _ControlLine(
               'Reset progress',
               const Icon(Icons.delete),
               onSelected: () {
@@ -123,7 +119,7 @@ class _NameChangeLine extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final settings = context.watch<SettingsController>();
+    final control = context.watch<ControlController>();
 
     return InkResponse(
       highlightShape: BoxShape.rectangle,
@@ -140,7 +136,7 @@ class _NameChangeLine extends StatelessWidget {
                 )),
             const Spacer(),
             ValueListenableBuilder(
-              valueListenable: settings.playerName,
+              valueListenable: control.playerName,
               builder: (context, name, child) => Text(
                 '‘$name’',
                 style: const TextStyle(
@@ -156,54 +152,14 @@ class _NameChangeLine extends StatelessWidget {
   }
 }
 
-class _APIChangeLine extends StatelessWidget {
-  final String title;
-
-  const _APIChangeLine(this.title);
-
-  @override
-  Widget build(BuildContext context) {
-    final settings = context.watch<SettingsController>();
-
-    return InkResponse(
-      highlightShape: BoxShape.rectangle,
-      onTap: () => showCustomAPITokenDialog(context),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(title,
-                style: const TextStyle(
-                  fontFamily: 'Permanent Marker',
-                  fontSize: 30,
-                )),
-            const Spacer(),
-            ValueListenableBuilder(
-              valueListenable: settings.apiToken,
-              builder: (context, apiToken, child) => Text(
-                '$apiToken',
-                style: const TextStyle(
-                  fontFamily: 'Permanent Marker',
-                  fontSize: 20,
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _SettingsLine extends StatelessWidget {
+class _ControlLine extends StatelessWidget {
   final String title;
 
   final Widget icon;
 
   final VoidCallback? onSelected;
 
-  const _SettingsLine(this.title, this.icon, {this.onSelected});
+  const _ControlLine(this.title, this.icon, {this.onSelected});
 
   @override
   Widget build(BuildContext context) {

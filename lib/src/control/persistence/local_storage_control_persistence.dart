@@ -4,11 +4,11 @@
 
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'settings_persistence.dart';
+import 'control_persistence.dart';
 
-/// An implementation of [SettingsPersistence] that uses
+/// An implementation of [ControlPersistence] that uses
 /// `package:shared_preferences`.
-class LocalStorageSettingsPersistence extends SettingsPersistence {
+class LocalStorageControlPersistence extends ControlPersistence {
   final Future<SharedPreferences> instanceFuture =
       SharedPreferences.getInstance();
 
@@ -28,12 +28,6 @@ class LocalStorageSettingsPersistence extends SettingsPersistence {
   Future<String> getPlayerName() async {
     final prefs = await instanceFuture;
     return prefs.getString('playerName') ?? 'Player';
-  }
-
-  @override
-  Future<String> getAPIToken() async {
-    final prefs = await instanceFuture;
-    return prefs.getString('apiToken') ?? 'API Token';
   }
 
   @override
@@ -58,12 +52,6 @@ class LocalStorageSettingsPersistence extends SettingsPersistence {
   Future<void> savePlayerName(String value) async {
     final prefs = await instanceFuture;
     await prefs.setString('playerName', value);
-  }
-
-  @override
-  Future<void> saveAPIToken(String value) async {
-    final prefs = await instanceFuture;
-    await prefs.setString('apiToken', value);
   }
 
   @override

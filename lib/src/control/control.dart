@@ -4,12 +4,12 @@
 
 import 'package:flutter/foundation.dart';
 
-import 'persistence/settings_persistence.dart';
+import 'persistence/control_persistence.dart';
 
-/// An class that holds settings like [playerName] or [musicOn],
+/// An class that holds control like [playerName] or [musicOn],
 /// and saves them to an injected persistence store.
-class SettingsController {
-  final SettingsPersistence _persistence;
+class ControlController {
+  final ControlPersistence _persistence;
 
   /// Whether or not the sound is on at all. This overrides both music
   /// and sound.
@@ -17,14 +17,12 @@ class SettingsController {
 
   ValueNotifier<String> playerName = ValueNotifier('Player');
 
-  ValueNotifier<String> apiToken = ValueNotifier('Player');
-
   ValueNotifier<bool> soundsOn = ValueNotifier(false);
 
   ValueNotifier<bool> musicOn = ValueNotifier(false);
 
-  /// Creates a new instance of [SettingsController] backed by [persistence].
-  SettingsController({required SettingsPersistence persistence})
+  /// Creates a new instance of [ControlController] backed by [persistence].
+  ControlController({required ControlPersistence persistence})
       : _persistence = persistence;
 
   /// Asynchronously loads values from the injected persistence store.
@@ -39,18 +37,12 @@ class SettingsController {
       _persistence.getSoundsOn().then((value) => soundsOn.value = value),
       _persistence.getMusicOn().then((value) => musicOn.value = value),
       _persistence.getPlayerName().then((value) => playerName.value = value),
-      _persistence.getAPIToken().then((value) => apiToken.value = value),
     ]);
   }
 
   void setPlayerName(String name) {
     playerName.value = name;
     _persistence.savePlayerName(playerName.value);
-  }
-
-  void setAPIToken(String token) {
-    apiToken.value = token;
-    _persistence.saveAPIToken(apiToken.value);
   }
 
   void toggleMusicOn() {

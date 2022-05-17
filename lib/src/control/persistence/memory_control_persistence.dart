@@ -2,11 +2,11 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-import 'package:game_template/src/settings/persistence/settings_persistence.dart';
+import 'package:game_template/src/control/persistence/control_persistence.dart';
 
-/// An in-memory implementation of [SettingsPersistence].
+/// An in-memory implementation of [ControlPersistence].
 /// Useful for testing.
-class MemoryOnlySettingsPersistence implements SettingsPersistence {
+class MemoryOnlyControlPersistence implements ControlPersistence {
   bool musicOn = true;
 
   bool soundsOn = true;
@@ -14,8 +14,6 @@ class MemoryOnlySettingsPersistence implements SettingsPersistence {
   bool muted = false;
 
   String playerName = 'Player';
-
-  String apiToken = '<token>';
 
   @override
   Future<bool> getMusicOn() async => musicOn;
@@ -25,9 +23,6 @@ class MemoryOnlySettingsPersistence implements SettingsPersistence {
 
   @override
   Future<String> getPlayerName() async => playerName;
-
-  @override
-  Future<String> getAPIToken() async => apiToken;
 
   @override
   Future<bool> getSoundsOn() async => soundsOn;
@@ -40,9 +35,6 @@ class MemoryOnlySettingsPersistence implements SettingsPersistence {
 
   @override
   Future<void> savePlayerName(String value) async => playerName = value;
-
-  @override
-  Future<void> saveAPIToken(String value) async => apiToken = value;
 
   @override
   Future<void> saveSoundsOn(bool value) async => soundsOn = value;

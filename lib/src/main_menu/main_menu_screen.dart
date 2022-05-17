@@ -31,7 +31,7 @@ class MainMenuScreen extends StatelessWidget {
           child: Transform.rotate(
             angle: -0.1,
             child: const Text(
-              'Flutter Game Template!',
+              'Let\'s make art!',
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontFamily: 'Permanent Marker',
@@ -44,6 +44,14 @@ class MainMenuScreen extends StatelessWidget {
         rectangularMenuArea: Column(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
+            ElevatedButton(
+              onPressed: () {
+                audioController.playSfx(SfxType.buttonTap);
+                GoRouter.of(context).go('/control');
+              },
+              child: const Text('Control'),
+            ),
+            _gap,
             ElevatedButton(
               onPressed: () {
                 audioController.playSfx(SfxType.buttonTap);
